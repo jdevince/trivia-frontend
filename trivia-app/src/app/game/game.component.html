@@ -1,0 +1,9 @@
+<p>Game Code: {{game.gameCode}}</p>
+
+<button mat-raised-button color="primary" (click)="startGame()">START GAME</button>
+
+<mat-list role="list">
+    <mat-list-item role="listitem" *ngFor="let player of game.players">
+        {{player.username}}: {{player.score}}
+    </mat-list-item>
+</mat-list>

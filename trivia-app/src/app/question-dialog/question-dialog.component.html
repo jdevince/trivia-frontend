@@ -1,0 +1,25 @@
+<div class="text-center">
+  <div mat-dialog-content>
+    <p>{{data.question.questionText}}</p>
+  </div>
+
+  <!-- Fill in -->
+  <div *ngIf="!data.question.options">
+    <mat-form-field class="fillInInput">
+      <mat-label>Answer</mat-label>
+      <input matInput [(ngModel)]="answer" (keydown.enter)="submit()">
+    </mat-form-field>
+    <button (click)="submit()" mat-raised-button color="primary" class="submitButton">SUBMIT</button>
+  </div>
+
+  <!-- Multiple choice -->
+  <div *ngIf="data.question.options" class="text-center">
+    <div *ngFor="let option of data.question.options">
+      <button mat-button [mat-dialog-close]="option" tabindex="-1">{{option}}</button>
+    </div>
+  </div>
+
+  <div>
+    <mat-progress-bar mode="determinate" [value]="progressBarValue"></mat-progress-bar>
+  </div>
+</div>

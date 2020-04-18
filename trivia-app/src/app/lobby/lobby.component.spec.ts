@@ -1,11 +1,11 @@
 import { TestBed, async } from '@angular/core/testing';
-import { TriviaComponent } from './trivia.component';
+import { LobbyComponent } from './lobby.component';
 
-describe('TriviaComponent', () => {
+describe('LobbyComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TriviaComponent
+        LobbyComponent
       ],
     }).compileComponents();
   }));

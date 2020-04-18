@@ -1,9 +1,12 @@
 import { NgModule }              from '@angular/core';
 import { RouterModule, Routes }  from '@angular/router';
-import { TriviaComponent } from './trivia/trivia.component';
+import { LobbyComponent } from './lobby/lobby.component';
+import { GameComponent } from './game/game.component';
 
 const appRoutes: Routes = [
-  { path: 'trivia', component: TriviaComponent }
+  { path: 'lobby', component: LobbyComponent },
+  { path: 'play', component: GameComponent },
+  { path: '**', redirectTo: 'lobby' }
 ];
 
 @NgModule({

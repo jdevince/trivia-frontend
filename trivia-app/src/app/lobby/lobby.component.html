@@ -1,0 +1,26 @@
+<div class="text-center">
+    <mat-card class="d-inline-block">
+        <div>
+            <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input matInput [(ngModel)]="username">
+            </mat-form-field>
+        </div>
+        <div>
+            <p>then</p>
+        </div>
+        <div>
+            <button (click)="createGame()" mat-raised-button color="primary">CREATE GAME</button>
+        </div>
+        <div>
+            <p>or</p>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Join game code</mat-label>
+                <input matInput [(ngModel)]="gameCode">
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onJoinGameClick()">JOIN GAME</button>
+        </div>
+    </mat-card>
+</div>
