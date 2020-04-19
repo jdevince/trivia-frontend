@@ -1,0 +1,20 @@
+.progressBarDiv {
+    max-width: 500px;
+}
+
+mat-list {
+    border: 5px solid lightgray;
+    border-radius: 20px;
+
+    mat-list-item {
+
+        &:not(:first-child) {
+            border-top: 2px solid lightgray;
+        }
+    
+        mat-icon {
+            position: relative;
+            top: 5px;
+        }
+    }
+}

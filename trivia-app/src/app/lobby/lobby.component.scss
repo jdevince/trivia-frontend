@@ -1,0 +1,27 @@
+.parentDiv {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: lightgray;
+}
+
+.header {
+    cursor: default;
+    margin-top: 10px;
+
+    button {
+        cursor: default;
+        position: relative;
+        top: -7px;
+    }
+}
+
+.difficultyFormField {
+    width: 150px;
+}
+
+.gameCodeFormField {
+    width: 150px;
+}

@@ -11,7 +11,7 @@ export class QuestionDialogComponent {
   public progressBarValue = 100;
 
   constructor(public dialogRef: MatDialogRef<QuestionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data) {
-    console.log(data);
+    this.dialogRef.disableClose = true;
 
     let interval = 30000 / 1000; //Reduce 0.1 percent at a time. 30 secs / 100%
     setInterval(() => {
@@ -20,6 +20,8 @@ export class QuestionDialogComponent {
   }
 
   public submit() {
-    this.dialogRef.close(this.answer);
+    if (this.answer) {
+      this.dialogRef.close(this.answer);
+    }
   }
 }

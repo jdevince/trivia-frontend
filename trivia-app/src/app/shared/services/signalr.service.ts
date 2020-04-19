@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
 import { Observable } from 'rxjs';
+import { environment } from './../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -13,8 +14,7 @@ export class SignalRService {
 
         return new Observable<boolean>((observer) => {
             this.hubConnection = new signalR.HubConnectionBuilder()
-                //.withUrl('https://trivia-apis.azurewebsites.net/triviaHub')
-                .withUrl('http://localhost:5000/triviaHub')
+                .withUrl(environment.apiUrl + '/triviaHub')
                 .build();
 
             this.hubConnection
@@ -23,20 +23,28 @@ export class SignalRService {
                     console.log('Connection started')
 
                     this.hubConnection.invoke('joinGame', username, gameCode)
-                        .then(() => {
-                            console.log('Joined game');
-                            observer.next(true);
+                        .then(result => {
+                            console.log('Join game result:' + result);
+                            observer.next(result);
                     })
                         .catch(() => {
                             console.log('Failed to join game');
-                            observer.error('Failed to join game');
+                            observer.next(false);
                         })
                 })
                 .catch(err => {
                     console.log('Error while starting connection: ' + err)
-                    observer.error('Error while starting connection: ' + err);
+                    observer.next(false);
                 })
         });
+    }
+
+    public isConnected() {
+        if (this.hubConnection) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Invokes
@@ -45,12 +53,15 @@ export class SignalRService {
     }
 
     public answerQuestion(answer: string) {
-        console.log('Ans ' + answer);
         this.hubConnection.invoke('answerQuestion', answer);
     }
 
-    public updateGameState() {
-        this.hubConnection.invoke('updateGameState');
+    public getCurrentGameState() {
+        this.hubConnection.invoke('getCurrentGameState');
+    }
+
+    public leaveGame() {
+        this.hubConnection.invoke('leaveGame');
     }
 
     //Listeners

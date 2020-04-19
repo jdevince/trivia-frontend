@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { SignalRService } from '../shared/services/signalr.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './game.component.html',
@@ -10,37 +11,67 @@ import { QuestionDialogComponent } from '../question-dialog/question-dialog.comp
 export class GameComponent implements OnInit {
 
   private dialogRef: MatDialogRef<QuestionDialogComponent>;
+  private interval;
 
   public game: any = {};
+  public secondsTillNextQuestion = null;
 
   constructor(
     public signalRService: SignalRService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.signalRService.addGameStateListener(this.onGameStateChange);
-    this.signalRService.addNewQuestionListener(this.onNewQuestion);
-    this.signalRService.addEndQuestionListener(this.onEndQuestion);
-    this.signalRService.updateGameState();
+    if (this.signalRService.isConnected()) {
+      this.signalRService.addGameStateListener(this.onGameStateChange);
+      this.signalRService.addNewQuestionListener(this.onNewQuestion);
+      this.signalRService.addEndQuestionListener(this.onEndQuestion);
+      this.signalRService.getCurrentGameState();
+    } else {
+      this.router.navigate(['lobby']);
+    }
+  }
+
+  @HostListener('window:beforeunload')
+  leaveGame() {
+    this.signalRService.leaveGame();
   }
 
   private onGameStateChange = (game) => {
     console.log(game);
+    game.players = game.players.sort((a, b) => b.score - a.score);
     this.game = game;
+
+    if (!game.isStarted) {
+      this.secondsTillNextQuestion = null;
+    }
   }
 
   public startGame() {
     this.signalRService.startGame();
   }
 
-  private onNewQuestion = (data) => {
-    console.log(data);
-    this.openQuestionDialog(data);
+  private onNewQuestion = (question) => {
+    console.log(question);
+    this.secondsTillNextQuestion = null;
+    this.openQuestionDialog(question);
   }
 
-  private onEndQuestion = (answer) => {
-    this.dialogRef.close();
+  private onEndQuestion = () => {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+
+    if (this.game.isStarted) {
+      this.secondsTillNextQuestion = 15;
+      clearInterval(this.interval);
+      this.interval = setInterval(() => {
+        if (this.secondsTillNextQuestion > 0) {
+          this.secondsTillNextQuestion--;
+        }
+      }, 1000);
+    }
   }
 
   openQuestionDialog(question): void {

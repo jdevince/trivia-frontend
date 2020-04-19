@@ -1,6 +1,11 @@
 <div class="text-center">
   <div mat-dialog-content>
-    <p>{{data.question.questionText}}</p>
+    <div *ngIf="data.question.category">
+      <p>Category: {{data.question.category}}</p>
+    </div>
+    <div>
+      <p>{{data.question.questionText}}</p>
+    </div>
   </div>
 
   <!-- Fill in -->
