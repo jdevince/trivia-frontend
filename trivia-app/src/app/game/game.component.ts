@@ -3,15 +3,17 @@ import { SignalRService } from '../shared/services/signalr.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
 
   private dialogRef: MatDialogRef<QuestionDialogComponent>;
   private interval;
+  private votedAsCorrectUsernames = [];
 
   public game: any = {};
   public secondsTillNextQuestion = null;
@@ -19,7 +21,8 @@ export class GameComponent implements OnInit {
   constructor(
     public signalRService: SignalRService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -30,6 +33,12 @@ export class GameComponent implements OnInit {
       this.signalRService.getCurrentGameState();
     } else {
       this.router.navigate(['lobby']);
+    }
+  }
+  
+  ngOnDestroy() {
+    if (this.signalRService) {
+      this.signalRService.stop();
     }
   }
 
@@ -55,6 +64,7 @@ export class GameComponent implements OnInit {
   private onNewQuestion = (question) => {
     console.log(question);
     this.secondsTillNextQuestion = null;
+    this.votedAsCorrectUsernames = [];
     this.openQuestionDialog(question);
   }
 
@@ -86,5 +96,14 @@ export class GameComponent implements OnInit {
         this.signalRService.answerQuestion(response);
       }
     });
+  }
+
+  public voteAsCorrect(username: string) {
+    if (this.votedAsCorrectUsernames.indexOf(username) !== -1) {
+      this.snackBar.open('You have already voted for ' + username, 'Dismiss', { duration: 3000 });
+    } else {
+      this.votedAsCorrectUsernames.push(username);
+      this.signalRService.voteAsCorrect(username);
+    }
   }
 }

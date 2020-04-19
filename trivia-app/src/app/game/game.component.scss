@@ -5,8 +5,11 @@
 mat-list {
     border: 5px solid lightgray;
     border-radius: 20px;
+    min-width: 400px;
 
     mat-list-item {
+        padding-top: 5px;
+        margin-bottom: 10px;
 
         &:not(:first-child) {
             border-top: 2px solid lightgray;
@@ -15,6 +18,14 @@ mat-list {
         mat-icon {
             position: relative;
             top: 5px;
+        }
+
+        .markAsCorrectDiv {
+            margin-bottom: 10px;
+
+            mat-icon {
+                margin-bottom: 10px;
+            }
         }
     }
 }

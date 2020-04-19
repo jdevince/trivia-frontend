@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SignalRService } from '../shared/services/signalr.service';
 import { HttpService } from '../shared/services/http.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { Difficulty } from '../shared/models/difficulty.enum';
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss']
 })
-export class LobbyComponent {
+export class LobbyComponent implements OnInit {
 
   public usernameControl = new FormControl();
   public difficulty = Difficulty.Easy.toString();
@@ -22,6 +22,10 @@ export class LobbyComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) { }
+
+  ngOnInit() {
+    this.signalRService.stop();
+  }
 
   public createGame() {
     if (this.usernameControl.value) {

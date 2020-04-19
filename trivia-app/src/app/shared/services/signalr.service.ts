@@ -39,6 +39,13 @@ export class SignalRService {
         });
     }
 
+    public stop() {
+        if (this.hubConnection) {
+            this.hubConnection.stop();
+            this.hubConnection = null;
+        }
+    }
+
     public isConnected() {
         if (this.hubConnection) {
             return true;
@@ -62,6 +69,10 @@ export class SignalRService {
 
     public leaveGame() {
         this.hubConnection.invoke('leaveGame');
+    }
+
+    public voteAsCorrect(username: string) {
+        this.hubConnection.invoke('voteAsCorrect', username);
     }
 
     //Listeners
