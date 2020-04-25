@@ -8,6 +8,11 @@
     <div *ngIf="!game.isStarted" class="mb-2">
         <button mat-raised-button color="primary" (click)="startGame()">START GAME</button>
     </div>
+    <div *ngIf="!game.isStarted" class="mb-2">
+        <button mat-raised-button color="primary" (click)="backToLobby()">
+            <mat-icon>reply</mat-icon>LOBBY
+        </button>
+    </div>
     <div *ngIf="game.lastAnswer">
         <div>
             <p>Last answer: {{game.lastAnswer}}</p>
@@ -32,7 +37,7 @@
                     <mat-icon class="text-success" *ngIf="player.lastAnswerCorrect">check_circle</mat-icon>
                     <mat-icon class="text-danger" *ngIf="!player.lastAnswerCorrect">cancel</mat-icon>
                 </div>
-                <div matLine class="markAsCorrectDiv" *ngIf="player.lastAnswer && player.lastAnswerCorrect === false
+                <div matLine class="markAsCorrectDiv" *ngIf="showVoteAsCorrect && player.lastAnswer && player.lastAnswerCorrect === false
                                 && !game.isQuestionActive && player.votesAsCorrectNum < player.votesAsCorrectDenom">
                     <button mat-raised-button color="primary" (click)="voteAsCorrect(player.username)">
                         <mat-icon>build</mat-icon>

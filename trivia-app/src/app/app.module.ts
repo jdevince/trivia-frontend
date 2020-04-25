@@ -9,6 +9,7 @@ import { MaterialModule } from './shared/modules/material.module';
 import { GameComponent } from './game/game.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { QuestionDialogComponent } from './question-dialog/question-dialog.component';
+import { CanDeactivateGuard } from './shared/guards/canDeactivate.guard';
 
 
 @NgModule({
@@ -26,7 +27,9 @@ import { QuestionDialogComponent } from './question-dialog/question-dialog.compo
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    CanDeactivateGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

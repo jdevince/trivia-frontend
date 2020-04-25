@@ -2,6 +2,11 @@
     max-width: 500px;
 }
 
+button mat-icon {
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
 mat-list {
     border: 5px solid lightgray;
     border-radius: 20px;

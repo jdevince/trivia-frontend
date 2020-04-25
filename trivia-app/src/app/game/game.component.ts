@@ -17,6 +17,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   public game: any = {};
   public secondsTillNextQuestion = null;
+  public showVoteAsCorrect: boolean;
 
   constructor(
     public signalRService: SignalRService,
@@ -32,19 +33,21 @@ export class GameComponent implements OnInit, OnDestroy {
       this.signalRService.addEndQuestionListener(this.onEndQuestion);
       this.signalRService.getCurrentGameState();
     } else {
-      this.router.navigate(['lobby']);
+      this.backToLobby();
     }
   }
-  
+
   ngOnDestroy() {
     if (this.signalRService) {
       this.signalRService.stop();
     }
   }
 
-  @HostListener('window:beforeunload')
-  leaveGame() {
-    this.signalRService.leaveGame();
+  @HostListener('window:beforeunload', ['$event'])
+  warnIfLeavingMidGame($event: any) {
+    if (this.game.isStarted) {
+      $event.returnValue = true;
+    }
   }
 
   private onGameStateChange = (game) => {
@@ -65,6 +68,7 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log(question);
     this.secondsTillNextQuestion = null;
     this.votedAsCorrectUsernames = [];
+    this.showVoteAsCorrect = question.options === null; // Don't show for multiple choice
     this.openQuestionDialog(question);
   }
 
@@ -105,5 +109,9 @@ export class GameComponent implements OnInit, OnDestroy {
       this.votedAsCorrectUsernames.push(username);
       this.signalRService.voteAsCorrect(username);
     }
+  }
+
+  public backToLobby() {
+    this.router.navigate(['lobby']);
   }
 }

@@ -67,10 +67,6 @@ export class SignalRService {
         this.hubConnection.invoke('getCurrentGameState');
     }
 
-    public leaveGame() {
-        this.hubConnection.invoke('leaveGame');
-    }
-
     public voteAsCorrect(username: string) {
         this.hubConnection.invoke('voteAsCorrect', username);
     }
