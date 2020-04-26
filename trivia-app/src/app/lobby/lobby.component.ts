@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
 import { Difficulty } from '../shared/models/difficulty.enum';
+import { MatDialog } from '@angular/material/dialog';
+import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 
 @Component({
   templateUrl: './lobby.component.html',
@@ -20,7 +22,8 @@ export class LobbyComponent implements OnInit {
     private httpService: HttpService,
     private signalRService: SignalRService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -56,12 +59,19 @@ export class LobbyComponent implements OnInit {
 
   private joinGame(gameCode) {
     this.signalRService.joinGame(this.usernameControl.value, gameCode).subscribe(result => {
-      console.log(result);
-      if (result === true) {
+      console.log('Join game result: ' + result);
+      if (result === 'Success') {
         this.router.navigate(['play']);
       } else {
-        this.snackBar.open('That game code does not exist', 'Dismiss', { duration: 3000 });
+        this.snackBar.open(result, 'Dismiss', { duration: 3000 });
       }
-    })
+    });
+  }
+
+  openAboutDialog(): void {
+    this.dialog.open(AboutDialogComponent, {
+      width: '90%',
+      maxWidth: '500px'
+    });
   }
 }

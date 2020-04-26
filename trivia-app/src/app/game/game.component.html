@@ -3,12 +3,13 @@
         <p><u>Game code: {{game.gameCode}}</u></p>
     </div>
     <div *ngIf="!game.isStarted && game.winnerText">
-        <p>{{game.winnerText}}</p>
+        <h3>{{game.winnerText}}</h3>
     </div>
     <div *ngIf="!game.isStarted" class="mb-2">
-        <button mat-raised-button color="primary" (click)="startGame()">START GAME</button>
+        <button *ngIf="isHost" mat-raised-button color="primary" (click)="startGame()">START GAME</button>
+        <p *ngIf="!isHost">Waiting for {{hostUsername}} to start the game</p>
     </div>
-    <div *ngIf="!game.isStarted" class="mb-2">
+    <div class="mb-2">
         <button mat-raised-button color="primary" (click)="backToLobby()">
             <mat-icon>reply</mat-icon>LOBBY
         </button>
@@ -23,7 +24,7 @@
     </div>
     <div class="d-flex justify-content-center">
         <mat-list role="list">
-            <mat-list-item role="listitem" *ngFor="let player of game.players" class="d-block">
+            <mat-list-item role="listitem" *ngFor="let player of players" class="d-block">
                 <div matLine>
                     <span>
                         {{player.username}}

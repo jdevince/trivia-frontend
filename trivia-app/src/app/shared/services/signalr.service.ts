@@ -9,34 +9,45 @@ import { environment } from './../../../environments/environment';
 export class SignalRService {
 
     private hubConnection: signalR.HubConnection
+    private retryConnectCount = 0;
+
+    public username: string;
 
     public joinGame(username: string, gameCode: string) {
+        return new Observable<string>((observer) => { this.attemptJoinGame(observer, username, gameCode) });
+    }
 
-        return new Observable<boolean>((observer) => {
-            this.hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl(environment.apiUrl + '/triviaHub')
-                .build();
+    private attemptJoinGame(observer, username, gameCode) {
+        this.hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(environment.apiUrl + '/triviaHub')
+            .build();
 
-            this.hubConnection
-                .start()
-                .then(() => {
-                    console.log('Connection started')
-
-                    this.hubConnection.invoke('joinGame', username, gameCode)
-                        .then(result => {
-                            console.log('Join game result:' + result);
+        this.hubConnection
+            .start()
+            .then(() => {
+                this.hubConnection.invoke('joinGame', username, gameCode)
+                    .then(result => {
+                        if (result === false) {
+                            // Sometimes this is failing to hit the endpoint and just returning false. Let's retry up to 5 times.
+                            console.log('Failed to join game, but retrying');
+                            if (this.retryConnectCount < 5) {
+                                this.retryConnectCount++;
+                                this.attemptJoinGame(observer, username, gameCode);
+                            } else {
+                                observer.next('Failed to connect and hit max retry count');
+                            }
+                        } else {
+                            this.username = username;
                             observer.next(result);
+                        }
                     })
-                        .catch(() => {
-                            console.log('Failed to join game');
-                            observer.next(false);
-                        })
-                })
-                .catch(err => {
-                    console.log('Error while starting connection: ' + err)
-                    observer.next(false);
-                })
-        });
+                    .catch(err => {
+                        observer.next('Error while joining game: ' + err);
+                    })
+            })
+            .catch(err => {
+                observer.next('Error while starting connection: ' + err);
+            })
     }
 
     public stop() {

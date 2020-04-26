@@ -19,6 +19,24 @@ export class GameComponent implements OnInit, OnDestroy {
   public secondsTillNextQuestion = null;
   public showVoteAsCorrect: boolean;
 
+  public get isHost() {
+    const isHost = this.hostUsername === this.signalRService.username;
+    return isHost;
+  }
+
+  public get hostUsername() {
+    if (this.game && this.game.players) {
+      return this.game.players[0].username;
+    }
+  }
+
+  public get players() {
+    if (this.game && this.game.players) {
+      // Sort without mutating to keep join order (for host)
+      return [...this.game.players].sort((a, b) => b.score - a.score);
+    }
+  }
+
   constructor(
     public signalRService: SignalRService,
     private dialog: MatDialog,
@@ -52,7 +70,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private onGameStateChange = (game) => {
     console.log(game);
-    game.players = game.players.sort((a, b) => b.score - a.score);
     this.game = game;
 
     if (!game.isStarted) {

@@ -12,9 +12,7 @@ const appRoutes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(
-      appRoutes
-    )
+    RouterModule.forRoot(appRoutes, { useHash: true }) //Use hash to avoids 404s since hosted in Azure Storage Account
   ],
   exports: [
     RouterModule

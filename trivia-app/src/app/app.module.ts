@@ -10,6 +10,7 @@ import { GameComponent } from './game/game.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { QuestionDialogComponent } from './question-dialog/question-dialog.component';
 import { CanDeactivateGuard } from './shared/guards/canDeactivate.guard';
+import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { CanDeactivateGuard } from './shared/guards/canDeactivate.guard';
     AppComponent,
     LobbyComponent,
     GameComponent,
-    QuestionDialogComponent
+    QuestionDialogComponent,
+    AboutDialogComponent
   ],
   imports: [
     HttpClientModule,
